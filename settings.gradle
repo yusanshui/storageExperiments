@@ -1,0 +1,4 @@
+rootProject.name = 'storageExperiments'
+include 'tpc-h'
+include 'micro'
+include 'metaTest'

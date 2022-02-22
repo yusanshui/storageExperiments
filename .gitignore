@@ -1,0 +1,6 @@
+.gradle
+.build
+.idea
+metaTest/build
+micro/build
+tpc-h/build

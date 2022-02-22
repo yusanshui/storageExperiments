@@ -1,0 +1,43 @@
+buildscript {
+    repositories {
+        maven { url("https://maven.aliyun.com/repository/public") }
+        maven { url("https://maven.aliyun.com/repository/spring") }
+        maven { url("https://maven.aliyun.com/repository/mapr-public") }
+        maven { url("https://maven.aliyun.com/repository/spring-plugin") }
+        maven { url("https://maven.aliyun.com/repository/gradle-plugin") }
+        maven { url("https://maven.aliyun.com/repository/google") }
+        maven { url("https://maven.aliyun.com/repository/jcenter") }
+    }
+    dependencies {
+        classpath "org.apache.commons:commons-lang3:3.9"
+    }
+}
+plugins {
+    id "de.undercouch.download" version "4.1.1"
+    id "org.inferred.processors" version "3.3.0"
+    id "java"
+    id 'org.springframework.boot' version "2.6.3"
+}
+repositories.clear()
+repositories.addAll(buildscript.repositories)
+dependencies {
+    processor(project.rootProject.ext.jarDependency("org.inferred", "freebuilder"))
+    implementation(project.rootProject.ext.jarDependency("com.google.guava", "guava"))
+    implementation(project.rootProject.ext.jarDependency("org.apache.commons", "commons-lang3"))
+    implementation(project.rootProject.ext.jarDependency("com.fasterxml.jackson.core", "jackson-core"))
+    implementation(project.rootProject.ext.jarDependency("com.fasterxml.jackson.core", "jackson-databind"))
+    implementation(project.rootProject.ext.jarDependency("com.fasterxml.jackson.core", "jackson-annotations"))
+    implementation(project.rootProject.ext.jarDependency("commons-io", "commons-io"))
+
+    implementation("mysql:mysql-connector-java:5.1.34")
+    implementation('org.springframework.boot:spring-boot-starter-web:2.6.3')
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.6.1")
+    compile 'com.alibaba:druid-spring-boot-starter:1.1.17'
+
+    testImplementation(project.rootProject.ext.jarDependency("org.junit.jupiter", "junit-jupiter-api"))
+    testRuntimeOnly(project.rootProject.ext.jarDependency("org.junit.jupiter", "junit-jupiter-engine"))
+    testImplementation(project.rootProject.ext.jarDependency("org.slf4j", "slf4j-simple"))
+}
+test {
+    useJUnitPlatform()
+}
