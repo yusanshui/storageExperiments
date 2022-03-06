@@ -6,7 +6,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 
 
 @Component
@@ -14,27 +13,29 @@ public class TestService implements CommandLineRunner {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Value("${dataBaseSize}")
+    @Value("${data.base.size}")
     int value;
 
     @Value("${sql}")
     String sql;
 
-    @Value("${workspace}")
-    String workspace;
-
     @Override
-    public void run(String... args) throws IOException, InterruptedException {
-        String command = workspace + "/dbgen -s " + value;
+    public void run(String... args) throws Exception {
+        String command = "./dbgen -s " + value;
         System.out.println(command);
         System.out.println("start to creat data......");
         Process exec = Runtime.getRuntime().exec(command);
         exec.waitFor();
         if(exec.exitValue() != 0){
             System.out.println("failed to create data");
-            System.exit(1);
+            throw new Exception("exit 1");
         }
         System.out.println("successfully to created data");
+        //create database
+        String dataBase = "tpch_" + System.currentTimeMillis();
+        System.out.println("start to create database ");
+        jdbcTemplate.execute("create database " + dataBase);
+        System.out.println("successfully create database " + dataBase);
         //create table
         System.out.println("start to create tables......");
         jdbcTemplate.execute("create table nation (n_nationkey integer not null,name char(25) not null, n_regionkey integer not null, n_comment varchar(152));");
@@ -66,14 +67,14 @@ public class TestService implements CommandLineRunner {
         //load data
         System.out.println("start to load data......");
         jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS=0;");
-        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" + workspace + "/customer.tbl' INTO TABLE customer FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
-        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" + workspace + "/lineitem.tbl' INTO TABLE lineitem FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
-        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" + workspace + "/nation.tbl' INTO TABLE nation FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
-        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" + workspace + "/orders.tbl' INTO TABLE orders FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
-        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" + workspace + "/partsupp.tbl' INTO TABLE partsupp FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
-        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" + workspace + "/part.tbl' INTO TABLE part FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
-        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" + workspace + "/region.tbl' INTO TABLE region FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
-        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" + workspace + "/supplier.tbl' INTO TABLE supplier FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
+        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" + "customer.tbl' INTO TABLE customer FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
+        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" + "lineitem.tbl' INTO TABLE lineitem FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
+        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" + "nation.tbl' INTO TABLE nation FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
+        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" +  "orders.tbl' INTO TABLE orders FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
+        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" + "partsupp.tbl' INTO TABLE partsupp FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
+        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" + "part.tbl' INTO TABLE part FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
+        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" +  "region.tbl' INTO TABLE region FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
+        jdbcTemplate.execute("LOAD DATA LOCAL INFILE '" +  "supplier.tbl' INTO TABLE supplier FIELDS TERMINATED BY '|' LINES TERMINATED BY '|\\n';");
         jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS=1;");
         System.out.println("successfully load data");
         System.out.println("start to test.......");
@@ -81,6 +82,9 @@ public class TestService implements CommandLineRunner {
         jdbcTemplate.execute(sql);
         long end = System.currentTimeMillis();
         System.out.println("sql execution time: " + (end - start) + "ms");
-        System.exit(0);
+        //delete database
+        jdbcTemplate.execute("drop database " + dataBase);
+        System.out.println("successfully drop database " + dataBase);
+        throw new Exception("exit 0");
     }
 }

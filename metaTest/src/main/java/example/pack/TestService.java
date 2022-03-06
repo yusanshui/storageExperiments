@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 
 
 @Component
@@ -16,7 +15,7 @@ public class TestService implements CommandLineRunner {
     private int number;
 
     @Override
-    public void run(String... args) throws IOException, InterruptedException {
+    public void run(String... args) throws Exception {
         String testDir = "test_" + System.nanoTime();
         String command = "mkdir " + testDir;
         System.out.println(command);
@@ -25,7 +24,7 @@ public class TestService implements CommandLineRunner {
         exec.waitFor();
         if(exec.exitValue() != 0){
             System.out.println("failed to mkdir " + testDir);
-            System.exit(1);
+            throw new Exception("exit 1");
         }
         long start = System.currentTimeMillis();
         for(int i = 0; i < number; i++){
@@ -39,7 +38,7 @@ public class TestService implements CommandLineRunner {
             exec.waitFor();
             if(exec.exitValue() != 0){
                 System.out.println("failed to mkdir " + tempDir);
-                System.exit(1);
+                throw new Exception("exit 1");
             }
         }
         long end = System.currentTimeMillis();
@@ -49,9 +48,9 @@ public class TestService implements CommandLineRunner {
         exec.waitFor();
         if(exec.exitValue() != 0){
             System.out.println("failed to remove " + testDir);
-            System.exit(1);
+            throw new Exception("exit 1");
         }
         System.out.println("successfully, directory number is " + number + ", directory depth is " + depth + " The time spent is " + (end - start) + "ms");
-        System.exit(0);
+        throw new Exception("exit 0");
     }
 }

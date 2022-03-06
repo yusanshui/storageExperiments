@@ -1,10 +1,10 @@
 package example.pack;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -12,27 +12,45 @@ import java.nio.charset.StandardCharsets;
 
 @Component
 public class TestService implements CommandLineRunner {
+    @Value("${operation}")
+    String operation;
+
+    @Value("${filename}")
+    String filename;
+
+    @Value("${depth}")
+    String depth;
+
+    @Value("${batch.size}")
+    String batchSize;
+
+    @Value("${num.jobs}")
+    String numJobs;
+
+    @Value("${runtime}")
+    int runtime;
+
     @Override
-    public void run(String... args) throws IOException, InterruptedException {
+    public void run(String... args) throws Exception {
         String command;
 
-        switch (args[0]){
+        switch (operation){
             case "sequential read":
-                command =  "fio -filename=" + args[1] + " -direct=1 -iodepth " + args[2] +" -thread -rw=read -ioengine=libaio -bs=" + args[3] + " -size=10G -numjobs=" + args[4] + " -runtime=" + args[5] + " -group_reporting -name=r_" + args[3];
+                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=read -ioengine=libaio -bs=" + batchSize + " -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=r_" + batchSize;
                 break;
             case "sequential write":
-                command =  "fio -filename=" + args[1] + " -direct=1 -iodepth " + args[2] +" -thread -rw=write -ioengine=libaio -bs=" + args[3] + " -size=10G -numjobs=" + args[4] + " -runtime=" + args[5] + " -group_reporting -name=w_" + args[3];;
+                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=write -ioengine=libaio -bs=" + batchSize + " -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=w_" + batchSize;;
                 break;
             case "random read":
-                command =  "fio -filename=" + args[1] + " -direct=1 -iodepth " + args[2] +" -thread -rw=randread -ioengine=libaio -bs=" + args[3] + " -size=10G -numjobs=" + args[4] + " -runtime=" + args[5] + " -group_reporting -name=randr_" + args[3];;
+                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=randread -ioengine=libaio -bs=" + batchSize + " -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=randr_" + batchSize;;
                 break;
-            case "radom write":
-                command =  "fio -filename=" + args[1] + " -direct=1 -iodepth " + args[2] +" -thread -rw=randwrite -ioengine=libaio -bs=" + args[3] + " -size=10G -numjobs=" + args[4] + " -runtime=" + args[5] + " -group_reporting -name=randw_" + args[3];;
+            case "random write":
+                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=randwrite -ioengine=libaio -bs=" + batchSize + " -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=randw_" + batchSize;;
                 break;
             default:
                 command="";
                 System.out.println("Parameter errors");
-                System.exit(0);
+                throw new Exception("exit 1");
         }
         System.out.println(command);
         System.out.println("start to test......");
@@ -52,10 +70,10 @@ public class TestService implements CommandLineRunner {
         exec.waitFor();
         if(exec.exitValue() != 0){
             System.out.println("failed to execute");
-            System.exit(1);
+            throw new Exception("exit 1");
         }
         System.out.println(sb.toString());
         System.out.println("successfully");
-        System.exit(0);
+        throw new Exception("exit 0");
     }
 }
