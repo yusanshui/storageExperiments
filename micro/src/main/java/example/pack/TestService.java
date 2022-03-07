@@ -1,7 +1,9 @@
 package example.pack;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -30,27 +32,35 @@ public class TestService implements CommandLineRunner {
     @Value("${runtime}")
     int runtime;
 
+    @Autowired
+    private ConfigurableApplicationContext context;
+
     @Override
     public void run(String... args) throws Exception {
         String command;
 
         switch (operation){
-            case "sequential read":
+            case "sequential_read":
                 command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=read -ioengine=libaio -bs=" + batchSize + " -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=r_" + batchSize;
                 break;
-            case "sequential write":
+            case "sequential_write":
                 command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=write -ioengine=libaio -bs=" + batchSize + " -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=w_" + batchSize;;
                 break;
-            case "random read":
+            case "random_read":
                 command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=randread -ioengine=libaio -bs=" + batchSize + " -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=randr_" + batchSize;;
                 break;
-            case "random write":
+            case "random_write":
                 command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=randwrite -ioengine=libaio -bs=" + batchSize + " -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=randw_" + batchSize;;
                 break;
             default:
-                command="";
-                System.out.println("Parameter errors");
-                throw new Exception("exit 1");
+                throw new Exception("Parameter errors:"
+                        + " operation=" + operation
+                        + " filename=" + filename
+                        + " depth=" + depth
+                        + " batch.size=" + batchSize
+                        + " num.jobs=" + numJobs
+                        + " runtime=" + runtime
+                );
         }
         System.out.println(command);
         System.out.println("start to test......");
@@ -69,11 +79,10 @@ public class TestService implements CommandLineRunner {
         }
         exec.waitFor();
         if(exec.exitValue() != 0){
-            System.out.println("failed to execute");
-            throw new Exception("exit 1");
+            throw new Exception("failed to execute");
         }
         System.out.println(sb.toString());
         System.out.println("successfully");
-        throw new Exception("exit 0");
+        context.close();
     }
 }

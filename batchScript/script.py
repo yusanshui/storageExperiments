@@ -19,7 +19,7 @@ def main(address):
     micro_test_file_name = 'micro_test' + str(time.time())
     with open(micro_test_file_name, 'a'):  # Create file if does not exist
         pass
-    micro_test_ops_list = ['sequential read', 'sequential write', 'random read', 'random write']
+    micro_test_ops_list = ['sequential_read', 'sequential_write', 'random_read', 'random_write']
     micro_test_depth_list = config.get('micro.test.depth.list')
     micro_test_batch_size_list = config.get('micro.test.batch.size.list')
     micro_test_job_nums = config.get('micro.test.job.nums')

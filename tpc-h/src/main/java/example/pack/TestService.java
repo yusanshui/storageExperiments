@@ -3,6 +3,7 @@ package example.pack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -13,22 +14,31 @@ public class TestService implements CommandLineRunner {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Value("${workspace}")
+    private String workspace;
+
     @Value("${data.base.size}")
     int value;
 
     @Value("${sql}")
     String sql;
 
+    @Autowired
+    private ConfigurableApplicationContext context;
+
     @Override
     public void run(String... args) throws Exception {
-        String command = "./dbgen -s " + value;
+        String command = "rm -f *.tbl";
+        System.out.println(command);
+        Process rmexec = Runtime.getRuntime().exec(command);
+        rmexec.waitFor();
+        command = "./dbgen -s " + value;
         System.out.println(command);
         System.out.println("start to creat data......");
         Process exec = Runtime.getRuntime().exec(command);
         exec.waitFor();
         if(exec.exitValue() != 0){
-            System.out.println("failed to create data");
-            throw new Exception("exit 1");
+            throw new Exception("failed to create data exitValue " + exec.exitValue());
         }
         System.out.println("successfully to created data");
         //create database
@@ -36,6 +46,7 @@ public class TestService implements CommandLineRunner {
         System.out.println("start to create database ");
         jdbcTemplate.execute("create database " + dataBase);
         System.out.println("successfully create database " + dataBase);
+        jdbcTemplate.execute("use " + dataBase + ";");
         //create table
         System.out.println("start to create tables......");
         jdbcTemplate.execute("create table nation (n_nationkey integer not null,name char(25) not null, n_regionkey integer not null, n_comment varchar(152));");
@@ -83,8 +94,9 @@ public class TestService implements CommandLineRunner {
         long end = System.currentTimeMillis();
         System.out.println("sql execution time: " + (end - start) + "ms");
         //delete database
+        jdbcTemplate.execute("use test;");
         jdbcTemplate.execute("drop database " + dataBase);
         System.out.println("successfully drop database " + dataBase);
-        throw new Exception("exit 0");
+        context.close();
     }
 }

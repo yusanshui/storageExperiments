@@ -1,7 +1,9 @@
 package example.pack;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 
@@ -14,17 +16,19 @@ public class TestService implements CommandLineRunner {
     @Value("${number}")
     private int number;
 
+    @Autowired
+    private ConfigurableApplicationContext context;
+
     @Override
     public void run(String... args) throws Exception {
-        String testDir = "test_" + System.nanoTime();
+        String testDir = "test_" + System.currentTimeMillis();
         String command = "mkdir " + testDir;
         System.out.println(command);
         System.out.println("create test directory " + testDir + " and start to test......");
         Process exec = Runtime.getRuntime().exec(command);
         exec.waitFor();
         if(exec.exitValue() != 0){
-            System.out.println("failed to mkdir " + testDir);
-            throw new Exception("exit 1");
+            throw new Exception("failed to mkdir " + testDir);
         }
         long start = System.currentTimeMillis();
         for(int i = 0; i < number; i++){
@@ -37,8 +41,7 @@ public class TestService implements CommandLineRunner {
             exec = Runtime.getRuntime().exec(command);
             exec.waitFor();
             if(exec.exitValue() != 0){
-                System.out.println("failed to mkdir " + tempDir);
-                throw new Exception("exit 1");
+                throw new Exception("failed to mkdir "+ tempDir);
             }
         }
         long end = System.currentTimeMillis();
@@ -47,10 +50,9 @@ public class TestService implements CommandLineRunner {
         exec = Runtime.getRuntime().exec(command);
         exec.waitFor();
         if(exec.exitValue() != 0){
-            System.out.println("failed to remove " + testDir);
-            throw new Exception("exit 1");
+            throw new Exception("failed to remove " + testDir);
         }
         System.out.println("successfully, directory number is " + number + ", directory depth is " + depth + " The time spent is " + (end - start) + "ms");
-        throw new Exception("exit 0");
+        context.close();
     }
 }
