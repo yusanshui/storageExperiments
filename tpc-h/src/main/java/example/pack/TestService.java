@@ -28,11 +28,7 @@ public class TestService implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String command = "rm -f *.tbl";
-        System.out.println(command);
-        Process rmexec = Runtime.getRuntime().exec(command);
-        rmexec.waitFor();
-        command = "./dbgen -s " + value;
+        String command = "./dbgen -s " + value;
         System.out.println(command);
         System.out.println("start to creat data......");
         Process exec = Runtime.getRuntime().exec(command);

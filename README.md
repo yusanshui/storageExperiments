@@ -86,7 +86,10 @@
           ```
 3. Run tpc-h.jar
     * Move `tpc-h.jar` to `dbgen` directory
-    * Configure test parameters.
+    * ```
+      rm -f *.tbl
+      ```
+    * Configure test parameters.You should replace with your parameters.
         + ```
           export SPRING_DATASOURCE_URL='jdbc:mysql://192.168.123.44:3306/'
           export SPRING_DATASOURCE_USERNAME=root
