@@ -1,21 +1,22 @@
 package example.pack;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-
-
 @Component
 public class TestService implements CommandLineRunner {
     @Autowired
+    @Qualifier("tpchtestJdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
-    @Value("${workspace}")
-    private String workspace;
+    @Autowired
+    @Qualifier("logJdbcTemplate")
+    private JdbcTemplate logJdbcTemplate;
 
     @Value("${data.base.size}")
     int value;
@@ -92,6 +93,8 @@ public class TestService implements CommandLineRunner {
         //delete database
         jdbcTemplate.execute("use test;");
         jdbcTemplate.execute("drop database " + dataBase);
+
+        logJdbcTemplate.execute("insert into tpchtest values('" + sql +"', " + (end - start) + ", now()");
         System.out.println("successfully drop database " + dataBase);
         context.close();
     }
