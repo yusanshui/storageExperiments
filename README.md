@@ -10,14 +10,22 @@
     * ```
       dnf -y install fio
       ```
-3. Run jar
-    * Configure test parameters. `DEPTH` is the depth of directory traversal, `NUM` is the number of tests
+3. Create `metatest` table in your database
+    * ```sql
+      create table metatest ( number int, depth int, spent int, time datetime);
+      ```
+4. Run jar
+    * Configure test parameters especially your database url etc. `DEPTH` is the depth of directory traversal, `NUM` is the number of tests
         + ```
+          export SPRING_DATASOURCE_URL='jdbc:mysql://10.0.2.15:3306/test'
+          export SPRING_DATASOURCE_USERNAME=root
+          export SPRING_DATASOURCE_PASSWORD=SEjkRknUmE
+          export SPRING_DATASOURCE_DRIVER='com.mysql.jdbc.Driver'
           export DEPTH=10
           export NUM=10
           ```
     * ```
-      java -jar metaTest.jar --depth=$DEPTH --number=$NUM 
+      java -jar metaTest.jar --spring.datasource.url=$SPRING_DATASOURCE_URL --spring.datasource.username=$SPRING_DATASOURCE_USERNAME --spring.datasource.password=$SPRING_DATASOURCE_PASSWORD --spring.datasource.driver-class-name=$SPRING_DATASOURCE_DRIVER  --depth=$DEPTH --number=$NUM 
       ```
       
 #### How to use microTest
@@ -26,18 +34,33 @@
     * ```
       ./gradlew micro:bootJar
       ```
-2. Run jar
-    * Configure test parameters. `OPERATION` is the depth of directory traversal, `FILENAME` is the number of tests, `DEPTH` is the number of tests, `BATCH_SIZE` is the number of tests, `NUM_JOBS` is the number of tests, `RUNTIME` is the number of tests
+2. Create `microtest` table in your database
+    * ```sql
+      create table microtest ( operation varchar(255), iops int, bw int, filename varchar(255), depth int, batchsize int, numjobs int, spent int, time datetime);
+      ```
+3. Run jar
+    * Configure test parameters. `OPERATION` is the operation that need to be tested, `FILENAME` is the name of test file, `DEPTH` is the depth of directory traversal, `BATCH_SIZE` is IO size, `NUM_JOBS` is the number of threads, `RUNTIME` is 
+time spent testing.
         + ```
+          export SPRING_DATASOURCE_URL='jdbc:mysql://10.0.2.15:3306/test'
+          export SPRING_DATASOURCE_USERNAME=root
+          export SPRING_DATASOURCE_PASSWORD=SEjkRknUmE
+          export SPRING_DATASOURCE_DRIVER='com.mysql.jdbc.Driver'
           export OPERATION='sequential_read'
           export FILENAME='micro_test'
           export DEPTH=32
-          export BATCH_SIZE=8k
+          export BATCH_SIZE=8
           export NUM_JOBS=8
           export RUNTIME=60
           ```
     * ```
-      java -jar micro.jar --operation=$OPERATION --filename=$FILENAME --depth=$DEPTH --batch.size=$BATCH_SIZE --num.jobs=$NUM_JOBS --runtime=$RUNTIME
+      touch $FILENAME
+      ```
+    * ```
+      java -jar micro.jar --spring.datasource.url=$SPRING_DATASOURCE_URL --spring.datasource.username=$SPRING_DATASOURCE_USERNAME --spring.datasource.password=$SPRING_DATASOURCE_PASSWORD --spring.datasource.driver-class-name=$SPRING_DATASOURCE_DRIVER  --operation=$OPERATION --filename=$FILENAME --depth=$DEPTH --batch.size=$BATCH_SIZE --num.jobs=$NUM_JOBS --runtime=$RUNTIME
+      ```
+    * ```
+      rm $FILENAME
       ```
       
 #### How to use tpc-h
@@ -91,14 +114,14 @@
       ```
     * Configure test parameters.You should replace with your parameters.
         + ```
-          export SPRING_DATASOURCE_URL='jdbc:mysql://192.168.123.44:3306/'
+          export SPRING_DATASOURCE_URL='jdbc:mysql://10.0.2.15:3306/'
           export SPRING_DATASOURCE_USERNAME=root
-          export SPRING_DATASOURCE_PASSWORD=9ndYiNnlmG
+          export SPRING_DATASOURCE_PASSWORD=SEjkRknUmE
           export SPRING_DATASOURCE_DRIVER='com.mysql.jdbc.Driver'
           export DATA_BASE_SIZE=1
           ```
         + ```
-          java -jar tpc-h.jar --spring.datasource.url=$SPRING_DATASOURCE_URL --spring.datasource.username=$SPRING_DATASOURCE_USERNAME --spring.datasource.password=$SPRING_DATASOURCE_PASSWORD --spring.datasource.driver-class-name=$SPRING_DATASOURCE_DRIVER --workspace=$WORKSPACE --data.base.size=$DATA_BASE_SIZE --sql="select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price, sum(l_extendedprice * (1 - l_discount)) as sum_disc_price, sum(l_extendedprice * (1 - l_discount) * (1 + l_tax)) as sum_charge, avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price, avg(l_discount) as avg_disc, count(*) as count_order from lineitem where l_shipdate <= date'1998-12-01' - interval '90' day group by l_returnflag, l_linestatus order by l_returnflag, l_linestatus;"
+          java -jar tpc-h.jar --spring.datasource.url=$SPRING_DATASOURCE_URL --spring.datasource.username=$SPRING_DATASOURCE_USERNAME --spring.datasource.password=$SPRING_DATASOURCE_PASSWORD --spring.datasource.driver-class-name=$SPRING_DATASOURCE_DRIVER --data.base.size=$DATA_BASE_SIZE --sql="select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price, sum(l_extendedprice * (1 - l_discount)) as sum_disc_price, sum(l_extendedprice * (1 - l_discount) * (1 + l_tax)) as sum_charge, avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price, avg(l_discount) as avg_disc, count(*) as count_order from lineitem where l_shipdate <= date'1998-12-01' - interval '90' day group by l_returnflag, l_linestatus order by l_returnflag, l_linestatus;"
           ```
         + You can use your own sql after `--sql=`
           

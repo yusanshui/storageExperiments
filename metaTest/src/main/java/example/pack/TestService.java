@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 
@@ -15,6 +16,9 @@ public class TestService implements CommandLineRunner {
     private int depth;
     @Value("${number}")
     private int number;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private ConfigurableApplicationContext context;
@@ -53,6 +57,9 @@ public class TestService implements CommandLineRunner {
             throw new Exception("failed to remove " + testDir);
         }
         System.out.println("successfully, directory number is " + number + ", directory depth is " + depth + " The time spent is " + (end - start) + "ms");
+        String sql = "insert into metaTable values(" + number + ", " + depth + ", " + (end - start) + ", now());";
+        System.out.println(sql);
+        jdbcTemplate.execute("insert into metatest values(" + number + ", " + depth + ", " + (end - start) + ", now());" );
         context.close();
     }
 }

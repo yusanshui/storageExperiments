@@ -4,12 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Component
@@ -33,6 +36,9 @@ public class TestService implements CommandLineRunner {
     int runtime;
 
     @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
     private ConfigurableApplicationContext context;
 
     @Override
@@ -41,16 +47,16 @@ public class TestService implements CommandLineRunner {
 
         switch (operation){
             case "sequential_read":
-                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=read -ioengine=libaio -bs=" + batchSize + " -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=r_" + batchSize;
+                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=read -ioengine=libaio -bs=" + batchSize + "k -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=r_" + batchSize;
                 break;
             case "sequential_write":
-                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=write -ioengine=libaio -bs=" + batchSize + " -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=w_" + batchSize;;
+                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=write -ioengine=libaio -bs=" + batchSize + "k -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=w_" + batchSize;;
                 break;
             case "random_read":
-                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=randread -ioengine=libaio -bs=" + batchSize + " -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=randr_" + batchSize;;
+                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=randread -ioengine=libaio -bs=" + batchSize + "k -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=randr_" + batchSize;;
                 break;
             case "random_write":
-                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=randwrite -ioengine=libaio -bs=" + batchSize + " -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=randw_" + batchSize;;
+                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=randwrite -ioengine=libaio -bs=" + batchSize + "k -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=randw_" + batchSize;;
                 break;
             default:
                 throw new Exception("Parameter errors:"
@@ -81,7 +87,30 @@ public class TestService implements CommandLineRunner {
         if(exec.exitValue() != 0){
             throw new Exception("failed to execute");
         }
-        System.out.println(sb.toString());
+        String out = sb.toString();
+        System.out.println(out);
+
+        Pattern p = Pattern.compile("IOPS="+"[0-9]{1,}");
+        Matcher m = p.matcher(out);
+        String iops = "";
+        if(m.find()){
+            iops = m.group();
+            int indexOf = iops.indexOf("IOPS");
+            iops = iops.substring(indexOf + 5);
+        }
+
+        p = Pattern.compile("BW="+"[0-9]{1,}");
+        m = p.matcher(out);
+        String bw = "";
+        if(m.find()){
+            bw = m.group();
+            int indexOf = bw.indexOf("BW=");
+            bw = bw.substring(indexOf + 3);
+        }
+
+        String sql = "insert into microtest values('" + operation + "', " + iops + ", " + bw + ", '" + filename + "', " + depth + ", " + batchSize + ", " + numJobs + ", " + runtime + ", now());";
+        System.out.println(sql);
+        jdbcTemplate.execute(sql);
         System.out.println("successfully");
         context.close();
     }
