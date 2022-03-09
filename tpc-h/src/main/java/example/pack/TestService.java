@@ -97,7 +97,8 @@ public class TestService implements CommandLineRunner {
         jdbcTemplate.execute("use test;");
         jdbcTemplate.execute("drop database " + dataBase);
 
-        logJdbcTemplate.execute("insert into tpchtest values('" + sql + "', '" + environment + "', " + (end - start) + ", now();");
+        sql = sql.replace("'", "''");
+        logJdbcTemplate.execute("insert into tpchtest values('" + sql + "', '" + environment + "', " + (end - start) + ", now());");
         System.out.println("successfully drop database " + dataBase);
         context.close();
     }

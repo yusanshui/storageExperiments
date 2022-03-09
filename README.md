@@ -116,7 +116,7 @@ time spent testing.
           ```
 2. Create `tpchtest` table in your database
     * ```sql
-      create table tpchtest(sqlcmd varchar(255), environment varchar(255), spent int, time datetime);
+      create table tpchtest(sqlcmd varchar(500), environment varchar(255), spent int, time datetime);
       ```
 3. Run tpc-h.jar
     * Move `tpc-h.jar` to `dbgen` directory
