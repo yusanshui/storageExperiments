@@ -2,7 +2,7 @@ environment: LVM
 spring.datasource.url: jdbc:mysql://10.0.2.15:3306/test
 spring.datasource.username: root
 spring.datasource.password: SEjkRknUmE
-spring.datasource.driver-class-name: com.mysql.jdbc.Driver'
+spring.datasource.driver-class-name: com.mysql.jdbc.Driver
 
 meta.depth.list:
   - 1

@@ -27,6 +27,7 @@ def main(address):
                   + ' --number=' + str(num) \
                   + ' --depth=' + str(depth)
             print(cmd)
+            os.system(cmd)
 
     micro_test_file_name = 'micro_test' + str(time.time())
     with open(micro_test_file_name, 'a'):  # Create file if does not exist
@@ -42,7 +43,7 @@ def main(address):
         for depth in micro_test_depth_list:
             for bs in micro_test_batch_size_list:
                 for fs in micro_test_file_size_list:
-                    cmd = 'java -jar microtest.jar --environment=' + environment \
+                    cmd = 'java -jar micro.jar --environment=' + environment \
                           + '--spring.datasource.url=' + spring_datasource_log_url \
                           + ' --spring.datasource.username=' + spring_datasource_log_username \
                           + ' --spring.datasource.password=' + str(spring_datasource_log_password) \
@@ -50,11 +51,12 @@ def main(address):
                           + ' --operation=' + ops \
                           + ' --filename=' + micro_test_file_name \
                           + ' --depth=' + str(depth) \
-                          + ' --batch.size=' + bs \
-                          + ' --file.size=' + fs \
+                          + ' --batch.size=' + str(bs) \
+                          + ' --file.size=' + str(fs) \
                           + ' --num.jobs=' + str(micro_test_job_nums) \
                           + ' --runtime=' + str(micro_test_time)
                     print(cmd)
+                    os.system(cmd)
     os.remove(micro_test_file_name)
 
     tpch_test_spring_datasource_url = config.get('spring.datasource.tpchtest.jdbc-url')
@@ -68,6 +70,10 @@ def main(address):
     for sql in tpch_test_sql_list:
         for databasesize in tpch_test_database_size_list:
             for i in range(tpch_test_num):
+                for root, dirs, files in os.walk('./'):
+                    for name in files:
+                        if(name.endswith(".tbl")):
+                            os.remove(os.path.join(root, name))
                 cmd = 'java -jar tpc-h.jar --environment=' + environment \
                       + ' --spring.datasource.log.jdbc-url=' + spring_datasource_log_url \
                       + ' --spring.datasource.log.username=' + spring_datasource_log_username \
@@ -80,6 +86,7 @@ def main(address):
                       + ' --data.base.size=' + str(databasesize) \
                       + ' --sql=' + sql
                 print(cmd)
+                os.system(cmd)
 
 if __name__ == "__main__":
     main(sys.argv[1])
