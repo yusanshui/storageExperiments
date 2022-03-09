@@ -74,17 +74,17 @@ def main(address):
                     for name in files:
                         if(name.endswith(".tbl")):
                             os.remove(os.path.join(root, name))
-                cmd = 'java -jar tpc-h.jar --environment=' + environment \
-                      + ' --spring.datasource.log.jdbc-url=' + spring_datasource_log_url \
-                      + ' --spring.datasource.log.username=' + spring_datasource_log_username \
+                cmd = 'java -jar tpc-h.jar --environment=' + str(environment) \
+                      + ' --spring.datasource.log.jdbc-url=' + str(spring_datasource_log_url) \
+                      + ' --spring.datasource.log.username=' + str(spring_datasource_log_username) \
                       + ' --spring.datasource.log.password=' + str(spring_datasource_log_password) \
-                      + ' --spring.datasource.log.driver-class-name=' + spring_datasource_log_driver_class_name \
-                      + ' --spring.datasource.tpchtest.jdbc-url=' + tpch_test_spring_datasource_url \
-                      + ' --spring.datasource.tpchtest.username=' + tpch_test_spring_datasource_username \
+                      + ' --spring.datasource.log.driver-class-name=' + str(spring_datasource_log_driver_class_name) \
+                      + ' --spring.datasource.tpchtest.jdbc-url=' + str(tpch_test_spring_datasource_url) \
+                      + ' --spring.datasource.tpchtest.username=' + str(tpch_test_spring_datasource_username) \
                       + ' --spring.datasource.tpchtest.password=' + str(tpch_test_spring_datasource_password) \
-                      + ' --spring.datasource.tpchtest.driver-class-name=' + tpch_test_spring_driver_class_name \
+                      + ' --spring.datasource.tpchtest.driver-class-name=' + str(tpch_test_spring_driver_class_name) \
                       + ' --data.base.size=' + str(databasesize) \
-                      + ' --sql=' + sql
+                      + ' --sql=\"' + str(sql) + '\"'
                 print(cmd)
                 os.system(cmd)
 
