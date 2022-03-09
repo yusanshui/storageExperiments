@@ -14,8 +14,12 @@ public class TestService implements CommandLineRunner {
 
     @Value("${depth}")
     private int depth;
+
     @Value("${number}")
     private int number;
+
+    @Value("${environment}")
+    String environment;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -57,9 +61,9 @@ public class TestService implements CommandLineRunner {
             throw new Exception("failed to remove " + testDir);
         }
         System.out.println("successfully, directory number is " + number + ", directory depth is " + depth + " The time spent is " + (end - start) + "ms");
-        String sql = "insert into metaTable values(" + number + ", " + depth + ", " + (end - start) + ", now());";
+        String sql = "insert into metatest values(" + number + ", " + depth + ", '" + environment + "', " + (end - start) + ", now());";
         System.out.println(sql);
-        jdbcTemplate.execute("insert into metatest values(" + number + ", " + depth + ", " + (end - start) + ", now());" );
+        jdbcTemplate.execute(sql);
         context.close();
     }
 }

@@ -29,11 +29,17 @@ public class TestService implements CommandLineRunner {
     @Value("${batch.size}")
     String batchSize;
 
+    @Value("${file.size}")
+    String fs;
+
     @Value("${num.jobs}")
     String numJobs;
 
     @Value("${runtime}")
     int runtime;
+
+    @Value("${environment}")
+    String environment;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -47,16 +53,16 @@ public class TestService implements CommandLineRunner {
 
         switch (operation){
             case "sequential_read":
-                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=read -ioengine=libaio -bs=" + batchSize + "k -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=r_" + batchSize;
+                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=read -ioengine=libaio -bs=" + batchSize + "k -size=" + fs +"G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=r_" + batchSize;
                 break;
             case "sequential_write":
-                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=write -ioengine=libaio -bs=" + batchSize + "k -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=w_" + batchSize;;
+                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=write -ioengine=libaio -bs=" + batchSize + "k -size=" + fs +"G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=w_" + batchSize;;
                 break;
             case "random_read":
-                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=randread -ioengine=libaio -bs=" + batchSize + "k -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=randr_" + batchSize;;
+                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=randread -ioengine=libaio -bs=" + batchSize + "k -size=" + fs +"G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=randr_" + batchSize;;
                 break;
             case "random_write":
-                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=randwrite -ioengine=libaio -bs=" + batchSize + "k -size=10G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=randw_" + batchSize;;
+                command =  "fio -filename=" + filename + " -direct=1 -iodepth " + depth +" -thread -rw=randwrite -ioengine=libaio -bs=" + batchSize + "k -size=" + fs +"G -numjobs=" + numJobs + " -runtime=" + runtime + " -group_reporting -name=randw_" + batchSize;;
                 break;
             default:
                 throw new Exception("Parameter errors:"
@@ -108,7 +114,7 @@ public class TestService implements CommandLineRunner {
             bw = bw.substring(indexOf + 3);
         }
 
-        String sql = "insert into microtest values('" + operation + "', " + iops + ", " + bw + ", '" + filename + "', " + depth + ", " + batchSize + ", " + numJobs + ", " + runtime + ", now());";
+        String sql = "insert into microtest values('" + operation + "', '" + environment + "', " + iops + ", " + bw + ", '" + filename + "', " + depth + ", " + batchSize + ", " + fs + ", " + numJobs + ", " + runtime + ", now());";
         System.out.println(sql);
         jdbcTemplate.execute(sql);
         System.out.println("successfully");

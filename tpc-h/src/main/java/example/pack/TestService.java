@@ -24,6 +24,9 @@ public class TestService implements CommandLineRunner {
     @Value("${sql}")
     String sql;
 
+    @Value("${environment}")
+    String environment;
+
     @Autowired
     private ConfigurableApplicationContext context;
 
@@ -94,7 +97,7 @@ public class TestService implements CommandLineRunner {
         jdbcTemplate.execute("use test;");
         jdbcTemplate.execute("drop database " + dataBase);
 
-        logJdbcTemplate.execute("insert into tpchtest values('" + sql +"', " + (end - start) + ", now()");
+        logJdbcTemplate.execute("insert into tpchtest values('" + sql + "', '" + environment + "', " + (end - start) + ", now();");
         System.out.println("successfully drop database " + dataBase);
         context.close();
     }
