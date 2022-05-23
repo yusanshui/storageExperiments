@@ -44,7 +44,7 @@ def main(address):
             for bs in micro_test_batch_size_list:
                 for fs in micro_test_file_size_list:
                     cmd = 'java -jar micro.jar --environment=' + environment \
-                          + '--spring.datasource.url=' + spring_datasource_log_url \
+                          + ' --spring.datasource.url=' + spring_datasource_log_url \
                           + ' --spring.datasource.username=' + spring_datasource_log_username \
                           + ' --spring.datasource.password=' + str(spring_datasource_log_password) \
                           + ' --spring.datasource.driver-class-name=' + spring_datasource_log_driver_class_name \

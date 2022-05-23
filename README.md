@@ -116,6 +116,8 @@ time spent testing.
           ```
 2. Create `tpchtest` table in your database
     * ```sql
+      create table metatest(number int, depth int, environment varchar(255), spent int, time datetime);
+      create table microtest(operation varchar(255), environment varchar(255), iops int, bw int, filename varchar(255), depth int, batchsize int, filesize int, numjobs int, spent int, time datetime);
       create table tpchtest(sqlcmd varchar(500), environment varchar(255), databasesize int, spent int, time datetime);
       ```
 3. Run tpc-h.jar
@@ -143,11 +145,16 @@ time spent testing.
           
 #### Execute the above tests in batches
 
-1. You should follow `install tpc-h tools` to install `dpgen`
+1. You should follow `install tpc-h tools` to install `dpgen` and create table in your database
+    * ```
+      
+      create table tpchtest(sqlcmd varchar(500), environment varchar(255), databasesize int, spent int, time datetime);
+      ```
 2. Move `./batchScript/script.py` to `dbgen` directory
 3. Package jar and move `jar packages` to `dbgen` directory
     * ```
-      gradlew bootJar
+      chmod 744 gradlew
+      ./gradlew bootJar
       ```
 4. Create a config.yaml like `./batchScript/config.yaml` in `dbgen` directory
 5. You should make sure you have `python3` installed on your machine. You can install python3 on `centos8` with the following command.
