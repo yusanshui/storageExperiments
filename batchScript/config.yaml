@@ -1,7 +1,7 @@
 environment: LVM
-spring.datasource.url: jdbc:mysql://10.0.2.15:3306/test
+spring.datasource.url: jdbc:mysql://192.168.123.44:1022/test
 spring.datasource.username: root
-spring.datasource.password: SEjkRknUmE
+spring.datasource.password: 69u7vCDQgP
 spring.datasource.driver-class-name: com.mysql.jdbc.Driver
 
 meta.depth.list:
@@ -23,9 +23,9 @@ micro.test.file.size.list:
 micro.test.job.nums: 8
 micro.test.time: 60
 
-spring.datasource.tpchtest.jdbc-url: jdbc:mysql://10.0.2.15:3306/
+spring.datasource.tpchtest.jdbc-url: jdbc:mysql:/192.168.123.44:1022/
 spring.datasource.tpchtest.username: root
-spring.datasource.tpchtest.password: SEjkRknUmE
+spring.datasource.tpchtest.password: 69u7vCDQgP
 spring.datasource.tpchtest.driver-class-name: com.mysql.jdbc.Driver
 tpch.test.num: 3
 tpch.test.database.size.list:

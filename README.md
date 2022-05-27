@@ -115,9 +115,7 @@ time spent testing.
           make
           ```
 2. Create `tpchtest` table in your database
-    * ```sql
-      create table metatest(number int, depth int, environment varchar(255), spent int, time datetime);
-      create table microtest(operation varchar(255), environment varchar(255), iops int, bw int, filename varchar(255), depth int, batchsize int, filesize int, numjobs int, spent int, time datetime);
+    * ```sql    
       create table tpchtest(sqlcmd varchar(500), environment varchar(255), databasesize int, spent int, time datetime);
       ```
 3. Run tpc-h.jar
