@@ -4,7 +4,7 @@ RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
 RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 RUN dnf -y install make gcc python3 java-1.8.0-openjdk.x86_64 fio
 RUN mkdir -p /opt/tpch
-COPY tpch/ /opt/tpch
+COPY ../tpch/ /opt/tpch
 ARG TPCH_VERSION=TPC-H_Tools_v3.0.0
 RUN cd /opt/tpch/$TPCH_VERSION/dbgen && make
 RUN pip3 install pyyaml
