@@ -28,6 +28,9 @@ spec:
           secret:
             secretName: {{ .Values.tpchSecret }}
             defaultMode: 0400
+        - name: micro
+          persistentVolumeClaim:
+            claimName: {{ template "tpch.fullname" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -36,6 +39,8 @@ spec:
             - mountPath: tpchconfig
               name: tpch-config
               readOnly: true
+            - mountPath: micro
+              name: micro
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
