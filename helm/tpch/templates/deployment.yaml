@@ -33,7 +33,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
-            - mountPath: /opt/tpch/TPC-H_Tools_v3.0.0/dbgen/config.yaml
+            - mountPath: tpchconfig
               name: tpch-config
               readOnly: true
       {{- with .Values.nodeSelector }}
