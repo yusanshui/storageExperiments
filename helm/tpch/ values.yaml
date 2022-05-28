@@ -1,0 +1,32 @@
+replicaCount: 1
+
+image:
+  repository: yumiao/tpch
+  pullPolicy: IfNotPresent
+  tag: "1.0"
+
+imagePullSecrets: [ ]
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: { }
+  name: ""
+podAnnotations: { }
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+ingress:
+  enabled: false
+
+persistence:
+  accessMode: 'ReadWriteOnce'
+  enabled: false
+  size: 10Gi
+  storageClass: '-'
+
+tpchSecret: tpch-config

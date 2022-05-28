@@ -1,0 +1,39 @@
+buildscript {
+    repositories {
+        for (mavenRepositoryUrl in project.rootProject.ext.mavenRepositoryUrlList) {
+            maven { url(mavenRepositoryUrl) }
+        }
+    }
+}
+
+plugins {
+    id 'org.unbroken-dome.helm' version '1.7.0'
+    id 'org.unbroken-dome.helm-publish' version '1.7.0'
+}
+
+String chartMuseumUrl = project.rootProject.ext.chartMuseum
+version = rootProject.ext.fullVersion
+String softwareVersion = project.getVersion()
+String chartName = "tpch"
+
+helm {
+    downloadClient {
+        enabled = true
+        version = '3.6.2'
+    }
+    charts {
+        tpch {
+            chartName = chartName
+            chartVersion = softwareVersion
+            sourceDir = project.file('tpch')
+        }
+    }
+    publishing {
+        repositories {
+            chartMuseum('chart-museum') {
+                url = uri(chartMuseumUrl)
+            }
+        }
+    }
+}
+
