@@ -1,3 +1,7 @@
+HashMap<String, String> systemEnv = new HashMap<String, String>(System.getenv())
+String mainVersion = "1.0.0"
+String tempFullVersion = "${mainVersion}-C${gitCommitId(systemEnv)}"
+
 ext {
     coreName = project.getName()
     mainVersion = "1.0.0"
@@ -12,28 +16,17 @@ ext {
             "https://maven.aliyun.com/repository/google",
             "https://maven.aliyun.com/repository/jcenter",
     ]
-    gitCommitId = { ->
-        def headDeafOutputStream = new ByteArrayOutputStream()
-        exec {
-            commandLine("git", "diff", "HEAD")
-            standardOutput = headDeafOutputStream
-        }
-        def headDeaf = headDeafOutputStream.toString().trim()
-        def clean = headDeaf.isEmpty()
-
-        def commitIdOutputStream = new ByteArrayOutputStream()
-        exec {
-            commandLine("git", "rev-parse", "--short", "HEAD")
-            standardOutput = commitIdOutputStream
-        }
-        return "${commitIdOutputStream.toString().trim()}${clean ? "" : ".dirty"}"
-    }
     constructGroupName = { middleName, projectName ->
         return "${ext.mainGroup}.${middleName}.${projectName} "
     }
     constructVersion = { ->
         return "${ext.mainVersion}-C${ext.gitCommitId()}"
     }
+    dockerRegistry = systemEnv.getOrDefault("DOCKER_REGISTRY", "localhost:5000/docker.io")
+    chartMuseum = systemEnv.getOrDefault("CHART_MUSEUM", "http://localhost:8080")
+    fullVersion = tempFullVersion
+    application_version = systemEnv.getOrDefault("APPLICATION_VERSION", tempFullVersion)
+    systemEnvMap = systemEnv
     jarDependencyVersion = { groupWithArtifact ->
         def slf4jVersion = "1.7.15"
         def jacksonVersion = "2.9.8"
@@ -101,4 +94,14 @@ ext {
         String groupWithArtifact = "${group}:${artifact}"
         return "${groupWithArtifact}:${ext.jarDependencyVersion(groupWithArtifact)}"
     }
+}
+
+def gitCommitId(Map<String, String> systemEnv) {
+    String gitCommitIdKey = "GIT_COMMIT_ID"
+    if (!systemEnv.containsKey(gitCommitIdKey)) {
+        String defaultGitCommitId = '000000'
+        println("WARNING: ${gitCommitIdKey} not found in env, using '${defaultGitCommitId}'")
+        return defaultGitCommitId
+    }
+    return systemEnv.get(gitCommitIdKey).trim()
 }
