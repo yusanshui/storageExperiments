@@ -145,7 +145,8 @@ time spent testing.
 
 1. You should follow `install tpc-h tools` to install `dpgen` and create table in your database
     * ```
-      
+      create table metatest(number int, depth int, environment varchar(255), spent int, time datetime);
+      create table microtest(operation varchar(255), environment varchar(255), iops int, bw int, filename varchar(255), depth int, batchsize int, filesize int, numjobs int, spent int, time datetime);
       create table tpchtest(sqlcmd varchar(500), environment varchar(255), databasesize int, spent int, time datetime);
       ```
 2. Move `./batchScript/script.py` to `dbgen` directory
@@ -162,6 +163,13 @@ time spent testing.
 6. Run
     * ```
       python3 script.py config.yaml
+      ```
+#### Prepare
+1. create tables
+    * ```
+      create table metatest(number int, depth int, environment varchar(255), spent int, time datetime);
+      create table microtest(operation varchar(255), environment varchar(255), iops int, bw int, filename varchar(255), depth int, batchsize int, filesize int, numjobs int, spent int, time datetime);
+      create table tpchtest(sqlcmd varchar(500), environment varchar(255), databasesize int, spent int, time datetime);
       ```
 
 #### test
@@ -185,4 +193,8 @@ time spent testing.
 5. generate secret
     * ```
       kubectl -n tpch create secret generic tpch-config --from-file=batchScript/config.yaml -o yaml --dry-run=client | kubectl -n tpch apply -f -
+      ```
+6. execute
+    * ```
+      helm -n tpch install tpchdemo helm/build/helm/charts/tpch-1.0.0-C000000.tgz
       ```
