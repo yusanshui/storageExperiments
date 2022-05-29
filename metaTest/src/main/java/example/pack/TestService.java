@@ -29,8 +29,8 @@ public class TestService implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String testDir = "test_" + System.currentTimeMillis();
-        String command = "mkdir " + testDir;
+        String testDir = "metatest/test_" + System.currentTimeMillis();
+        String command = "mkdir -p" + testDir;
         System.out.println(command);
         System.out.println("create test directory " + testDir + " and start to test......");
         Process exec = Runtime.getRuntime().exec(command);

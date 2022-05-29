@@ -49,7 +49,7 @@ def main(address):
                           + ' --spring.datasource.password=' + str(spring_datasource_log_password) \
                           + ' --spring.datasource.driver-class-name=' + spring_datasource_log_driver_class_name \
                           + ' --operation=' + ops \
-                          + ' --filename=' + micro_test_file_name \
+                          + ' --filename=micro/' + micro_test_file_name \
                           + ' --depth=' + str(depth) \
                           + ' --batch.size=' + str(bs) \
                           + ' --file.size=' + str(fs) \
