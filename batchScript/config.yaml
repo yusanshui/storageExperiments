@@ -23,7 +23,7 @@ micro.test.file.size.list:
 micro.test.job.nums: 8
 micro.test.time: 60
 
-spring.datasource.tpchtest.jdbc-url: jdbc:mysql:/192.168.123.44:1022/
+spring.datasource.tpchtest.jdbc-url: jdbc:mysql://192.168.123.44:1022/
 spring.datasource.tpchtest.username: root
 spring.datasource.tpchtest.password: 69u7vCDQgP
 spring.datasource.tpchtest.driver-class-name: com.mysql.jdbc.Driver
