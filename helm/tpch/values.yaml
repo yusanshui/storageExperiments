@@ -28,8 +28,8 @@ ingress:
 
 persistence:
   accessMode: 'ReadWriteOnce'
-  enabled: false
+  enabled: true
   size: 10Gi
-  storageClass: '-'
+  storageClass: 'standard'
 
 tpchSecret: tpch-config
