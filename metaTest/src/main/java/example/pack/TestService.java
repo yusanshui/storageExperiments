@@ -29,7 +29,7 @@ public class TestService implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String testDir = "metatest/test_" + System.currentTimeMillis();
+        String testDir = "test/test_" + System.currentTimeMillis();
         String command = "mkdir -p" + testDir;
         System.out.println(command);
         System.out.println("create test directory " + testDir + " and start to test......");

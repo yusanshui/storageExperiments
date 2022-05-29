@@ -28,7 +28,7 @@ spec:
           secret:
             secretName: {{ .Values.tpchSecret }}
             defaultMode: 0400
-        - name: micro
+        - name: test
           persistentVolumeClaim:
             claimName: {{ template "tpch.fullname" . }}
       containers:
@@ -39,8 +39,8 @@ spec:
             - mountPath: tpchconfig
               name: tpch-config
               readOnly: true
-            - mountPath: micro
-              name: micro
+            - mountPath: test
+              name: test
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

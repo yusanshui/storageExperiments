@@ -29,7 +29,7 @@ def main(address):
             print(cmd)
             os.system(cmd)
 
-    micro_test_file_name = 'micro_test' + str(time.time())
+    micro_test_file_name = 'test/micro_test' + str(time.time())
     with open(micro_test_file_name, 'a'):  # Create file if does not exist
         pass
     micro_test_ops_list = ['sequential_read', 'sequential_write', 'random_read', 'random_write']
@@ -49,7 +49,7 @@ def main(address):
                           + ' --spring.datasource.password=' + str(spring_datasource_log_password) \
                           + ' --spring.datasource.driver-class-name=' + spring_datasource_log_driver_class_name \
                           + ' --operation=' + ops \
-                          + ' --filename=micro/' + micro_test_file_name \
+                          + ' --filename=' + micro_test_file_name \
                           + ' --depth=' + str(depth) \
                           + ' --batch.size=' + str(bs) \
                           + ' --file.size=' + str(fs) \
