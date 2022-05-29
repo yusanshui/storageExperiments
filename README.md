@@ -163,3 +163,26 @@ time spent testing.
     * ```
       python3 script.py config.yaml
       ```
+
+#### test
+
+1. build
+    * ```
+      ./gradlew bootJar
+      ```
+2. modify config
+    * ```
+      vim batchScript/config.yaml
+      ```
+3. build image
+    * ```
+      docker build --tag yumiao/tpch:1.0 -f docker/Dockerfile .
+      ```
+4. helm package
+    * ```
+      ./gradlew helmPackageTpchChart
+      ```
+5. generate secret
+    * ```
+      kubectl -n tpch create secret generic tpch-config --from-file=batchScript/config.yaml -o yaml --dry-run=client | kubectl -n tpch apply -f -
+      ```
