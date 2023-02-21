@@ -1,11 +1,11 @@
-environment: LVM
-spring.datasource.url: jdbc:mysql://192.168.123.44:1022/test
+environment: ceph
+spring.datasource.url: jdbc:mysql://maria-db-test-mariadb.test.svc.cluster.local/test
 spring.datasource.username: root
-spring.datasource.password: 69u7vCDQgP
+spring.datasource.password: faDjx2uAhu
 spring.datasource.driver-class-name: com.mysql.jdbc.Driver
 
 meta.depth.list:
-  - 1
+  - 10
   - 100
 meta.num:
   - 10
@@ -20,12 +20,12 @@ micro.test.batch.size.list:
 micro.test.file.size.list:
   - 1
   - 10
-micro.test.job.nums: 8
+micro.test.job.nums: 2
 micro.test.time: 60
 
-spring.datasource.tpchtest.jdbc-url: jdbc:mysql://192.168.123.44:1022/
+spring.datasource.tpchtest.jdbc-url: jdbc:mysql://maria-db-test-mariadb.test.svc.cluster.local/
 spring.datasource.tpchtest.username: root
-spring.datasource.tpchtest.password: 69u7vCDQgP
+spring.datasource.tpchtest.password: faDjx2uAhu
 spring.datasource.tpchtest.driver-class-name: com.mysql.jdbc.Driver
 tpch.test.num: 3
 tpch.test.database.size.list:

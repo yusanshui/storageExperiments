@@ -7,7 +7,7 @@ RUN mkdir -p /opt/tpch
 COPY tpch/ /opt/tpch/
 ARG TPCH_VERSION=TPC-H_Tools_v3.0.0
 RUN cd /opt/tpch/$TPCH_VERSION/dbgen && make
-RUN pip3 install pyyaml
+RUN pip3 install --index http://mirrors.aliyun.com/pypi/simple/pyyaml
 
 COPY metaTest/build/libs/metaTest.jar /opt/tpch/$TPCH_VERSION/dbgen/
 COPY micro/build/libs/micro.jar /opt/tpch/$TPCH_VERSION/dbgen/

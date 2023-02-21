@@ -3,3 +3,5 @@ include 'tpc-h'
 include 'micro'
 include 'metaTest'
 include 'helm'
+include 'predict'
+
